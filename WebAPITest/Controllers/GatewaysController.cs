@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using WebAPITest.Models;
 
 namespace WebAPITest.Controllers
 {
+    [EnableCors("Policy")]
     [Route("api/[controller]")]
     [ApiController]
     public class GatewaysController : ControllerBase
@@ -77,14 +79,19 @@ namespace WebAPITest.Controllers
             return device;
         }
 
-        // POST: api/Gateways
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Gateway>> PostGateway(Gateway gateway)
         {
             if (!IPAddress.TryParse(gateway.IP, out _))
             {
                 return BadRequest("That's not an IP address");
+            }
+
+            var existsGW = await _context.Gateways.Include(d => d.PeripheralDevices).AnyAsync(x => x.SerialNumber == gateway.SerialNumber);
+
+            if (existsGW)
+            {
+                return Conflict();
             }
 
             _context.Gateways.Add(gateway);
@@ -148,6 +155,7 @@ namespace WebAPITest.Controllers
         }
 
         // DELETE: api/Gateways/{id}
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGateway(string id)
         {
@@ -160,7 +168,27 @@ namespace WebAPITest.Controllers
             _context.Gateways.Remove(gateway);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok(id);
+        }
+
+        [HttpDelete("{id}/Devices/{guid}")]
+        public async Task<IActionResult> DeleteDevice(string id, long guid)
+        {
+            var gateway = await _context.Gateways.Include(d => d.PeripheralDevices).FirstOrDefaultAsync(x => x.SerialNumber == id);
+            if (gateway == null)
+            {
+                return NotFound();
+            }
+
+            var device = gateway.PeripheralDevices.FirstOrDefault(x => x.Guid == guid);
+            if (device != null)
+            {
+                gateway.PeripheralDevices.Remove(device);
+            }
+            
+            await _context.SaveChangesAsync();
+
+            return Ok(guid);
         }
 
         private bool GatewayExists(string id)
