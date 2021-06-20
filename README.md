@@ -3,7 +3,7 @@
 develop with .Net 5
 
 
-Automated build and release on folder "WebAPITest_published"
+Bash script: Automated build and release on folder "WebAPITest_published"
 
 git clone https://github.com/skullwarriorsergio/WebAPITest.git WebAPITest
 cd WebAPITest
