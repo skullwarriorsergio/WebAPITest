@@ -5,7 +5,6 @@ develop with .Net 5
 
 Automated build and release on folder "WebAPITest_published"
 
-//-----------------
 git clone https://github.com/skullwarriorsergio/WebAPITest.git WebAPITest
 cd WebAPITest
 ::Get the NuGet packages
@@ -21,4 +20,4 @@ timeout 2
 dotnet publish -o "..\WebAPITest_published"
 timeout 5
 cd ..
-//-----------------
+
