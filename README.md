@@ -16,4 +16,4 @@ You can use build.cmd batch script to download the code from the repo, build it,
 To change IP:Port in production build add/modify "urls" property in 'appsettings.json' with
 "urls":"http://IP:PORT;https://IP:SSLPORT",
 
-Ej:  "urls":"http://0.0.0.0:6001;https://0.0.0.0:6002",
+	"urls":"http://0.0.0.0:6001;https://0.0.0.0:6002",
