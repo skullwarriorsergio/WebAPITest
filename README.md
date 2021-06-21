@@ -17,4 +17,3 @@ To change IP:Port in production build add/modify "urls" property in 'appsettings
 "urls":"http://IP:PORT;https://IP:SSLPORT",
 
 Ej:  "urls":"http://0.0.0.0:6001;https://0.0.0.0:6002",
-
